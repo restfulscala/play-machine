@@ -5,7 +5,7 @@ import org.restfulscala.playmachine.example.domain.{Cell, CellId, CellRepository
 import org.restfulscala.playmachine.example.web.SirenRepresentations._
 import org.restfulscala.playmachine.resource.{PathParam, Resource}
 import org.restfulscala.playsiren._
-import play.api.mvc.{Request, RequestHeader}
+import play.api.mvc.Request
 
 object CellResource extends Resource[Cell] {
 

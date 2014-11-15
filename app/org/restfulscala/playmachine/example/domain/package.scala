@@ -15,7 +15,11 @@ package object domain {
   )
 
   object Cell {
-    def neighbours(cell: Cell): List[(Direction, CellId)] = List()
+    import Direction._
+    def neighbours(cell: Cell): List[(Direction, CellId)] = {
+      val all = List(north -> cell.north, south -> cell.south, west -> cell.west, east -> cell.east)
+      all collect { case (direction, Some(neighbour)) => direction -> neighbour }
+    }
   }
 
   sealed trait Direction
@@ -26,6 +30,17 @@ package object domain {
     case object west extends Direction
   }
 
-  case class Switch()
+  case class SwitchId(value: String) extends AnyVal
+
+  case class Switch(
+    switchId: SwitchId,
+    position: Position
+  )
+
+  sealed trait Position
+  object Position {
+    case object Up extends Position
+    case object Down extends Position
+  }
 
 }

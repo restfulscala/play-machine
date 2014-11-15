@@ -23,7 +23,10 @@ object CellRepository {
     CellId("I") -> Cell(
       CellId("I"),
       "Cell I",
-      south = Some(CellId("N"))
+      south = Some(CellId("N")),
+      switches = List(
+        Switch(SwitchId("1"), Position.Down)
+      )
     )
 
   )
