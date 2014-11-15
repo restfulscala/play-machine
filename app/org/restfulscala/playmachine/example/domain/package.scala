@@ -14,12 +14,9 @@ package object domain {
     east: Option[CellId] = None,
     west: Option[CellId] = None,
     switches: List[SwitchId] = Nil
-  )
-
-  object Cell {
-    import Direction._
-    def neighbours(cell: Cell): List[(Direction, CellId)] = {
-      val all = List(north -> cell.north, south -> cell.south, west -> cell.west, east -> cell.east)
+  ){
+    def neighbours(): List[(Direction, CellId)] = {
+      val all = List(Direction.north -> north, Direction.south ->south, Direction.west -> west, Direction.east -> east)
       all collect { case (direction, Some(neighbour)) => direction -> neighbour }
     }
   }

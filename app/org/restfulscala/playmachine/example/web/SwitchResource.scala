@@ -20,6 +20,7 @@ object SwitchResource extends Resource[Switch, SwitchId] {
 
   override def handleGet(resource: Switch) = {
     case AcceptsSirenJson() => Ok(Siren.asRootEntity(resource))
+    case Accepts.Html()     => Ok(views.html.switch(resource))
   }
 
   override def handlePost(request: Request[_], switchId: SwitchId) = {

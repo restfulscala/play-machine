@@ -19,6 +19,7 @@ object CellResource extends Resource[Cell, CellId] {
 
   override def handleGet(resource: Cell) = {
       case AcceptsSirenJson() => Ok(Siren.asRootEntity(resource))
+      case Accepts.Html()     => Ok(views.html.cell(resource))
     }
 
 }
