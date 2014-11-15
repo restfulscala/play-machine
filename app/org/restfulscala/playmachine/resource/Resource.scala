@@ -90,7 +90,7 @@ trait Resource[R] extends Controller {
   def handleIsOptions(request : Request[_], pathParams: Seq[PathParam]): Result = {
   	request.method == "OPTIONS" match {
       case true  => Results.Ok.withHeaders("Allow" -> allowedMethods.mkString(", "))
-      case false => ???
+      case false => handleContainsAccept(request, pathParams)
     }
   }
 
