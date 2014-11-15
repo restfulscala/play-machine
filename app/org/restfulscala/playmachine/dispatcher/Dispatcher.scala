@@ -1,5 +1,19 @@
 package org.restfulscala.playmachine.dispatcher
 
-import play.api.mvc.{RequestHeader, Handler}
+import org.restfulscala.playmachine.resource.{Resource, PathParam}
+import play.api.mvc._
 
-trait Dispatcher extends (RequestHeader => Option[Handler])
+class Dispatcher(routes: List[Route])
+  extends (RequestHeader => Option[Handler]) with Results {
+
+  final def apply(request: RequestHeader): Option[Handler] = {
+    dispatch(request) match {
+      case Some((resource, params)) => Some(resource.handleRequest(params))
+      case None => Some(Action(NotFound))
+    }
+  }
+
+  protected def dispatch(request: RequestHeader): Option[(Resource, Seq[PathParam])] =
+    routes collectFirst Function.unlift(Route.matches(request))
+
+}

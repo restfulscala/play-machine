@@ -1,10 +1,8 @@
 package org.restfulscala.playmachine.example
 
-import org.restfulscala.playmachine.dispatcher.Dispatcher
-import play.api.mvc.{Handler, RequestHeader}
-import shapeless.HNil
+import org.restfulscala.playmachine.dispatcher.PathMatch.{Empty, Seg}
+import org.restfulscala.playmachine.dispatcher.{PathMatch, Route, Dispatcher}
 
-object MyDispatcher extends Dispatcher {
-  override def apply(reqHeader: RequestHeader): Option[Handler] =
-    Some(StandardController.handleRequest(HNil))
-}
+object MyDispatcher extends Dispatcher(
+  List(Route(PathMatch(Seg("") :: Nil), CellResource))
+)

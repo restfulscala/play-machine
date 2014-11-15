@@ -1,8 +1,12 @@
 package org.restfulscala.playmachine.dispatcher
 
-import org.restfulscala.playmachine.resource.Resource
-import shapeless.HList
+import org.restfulscala.playmachine.resource.{PathParam, Resource}
+import play.api.mvc.RequestHeader
 
-case class Route[PathParams <: HList](
-  pathMatcher: PathMatcher[PathParams],
-  resource: Resource[PathParams])
+case class Route(pathMatch: PathMatch, resource: Resource)
+object Route {
+  def matches(request: RequestHeader)(route: Route): Option[(Resource, Seq[PathParam])] = {
+    val pathParams = PathMatch.matches(route.pathMatch)(request.path)
+    pathParams map (route.resource -> _)
+  }
+}
