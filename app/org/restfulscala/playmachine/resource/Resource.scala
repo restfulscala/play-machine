@@ -10,6 +10,7 @@ trait Resource extends Controller {
 
   def isMalformed(request : Request[_], pathParams: Seq[PathParam]): Boolean = false
 
+  // idea : write async version
   def isAuthorized(request : Request[_], pathParams: Seq[PathParam]): Boolean = true
 
   def isForbidden(request : Request[_], pathParams: Seq[PathParam]): Boolean = false
@@ -19,6 +20,9 @@ trait Resource extends Controller {
   def isContentTypeSupport(contentType : Option[String]): Boolean = true
 
   def isRequestEntityTooLarge(request : Request[_]) : Boolean = false
+
+  // idea : write async version
+  def isResourceExists(request : Request[_], pathParams: Seq[PathParam]) : Boolean = true
 
   def handleRequest(pathParams: Seq[PathParam]): EssentialAction = Action { request =>
   	// Bootstrap decision tree
@@ -88,5 +92,16 @@ trait Resource extends Controller {
     }
   }
 
-  def handleResourceExists(request : Request[_], pathParams: Seq[PathParam]): Result = ???
+  def handleResourceExists(request : Request[_], pathParams: Seq[PathParam]): Result = {
+  	//  from now on, we will follow an over simplified version of the header flow...because HACKATHON!
+  	isResourceExists(request, pathParams) match {
+      case true  => handleReads(request, pathParams)
+      case false => handleWrites(request, pathParams)
+    }
+  }
+
+  def handleReads(request : Request[_], pathParams: Seq[PathParam]): Result = ???
+
+  def handleWrites(request : Request[_], pathParams: Seq[PathParam]): Result = ???
+
 }
