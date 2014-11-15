@@ -1,13 +1,18 @@
 package org.restfulscala.playmachine.resource
 
+import play.api.http.HttpVerbs
 import play.api.mvc.{Action, EssentialAction, Controller, Results, Request, Result, Headers}
+<<<<<<< HEAD
 import play.api.http.Writeable
 import org.restfulscala.playmachine.resource._
 
 trait Resource[R] extends Controller {
+=======
 
-  // TODO use proper HttpMethod case class
-  def allowedMethods : Set[String] = Set("GET", "HEAD")
+trait Resource extends Controller with HttpVerbs {
+>>>>>>> Use HttpVerbs constants
+
+  def allowedMethods : Set[String] = Set(GET, HEAD)
 
   implicit def writer : Writeable[R]
 
@@ -85,7 +90,7 @@ trait Resource[R] extends Controller {
   }
 
   def handleIsOptions(request : Request[_], pathParams: Seq[PathParam]): Result = {
-  	request.method == "OPTIONS" match {
+  	request.method == OPTIONS match {
       case true  => Results.Ok.withHeaders("Allow" -> allowedMethods.mkString(", "))
       case false => handleContainsAccept(request, pathParams)
     }
