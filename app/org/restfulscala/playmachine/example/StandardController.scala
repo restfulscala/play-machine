@@ -1,11 +1,8 @@
 package org.restfulscala.playmachine.example
 
-import play.api.mvc.{Action, Controller}
+import org.restfulscala.playmachine.resource.Resource
+import shapeless.HNil
 
-object StandardController extends Controller {
-
-  def handle() = Action { req =>
-    Ok("foo")
-  }
+object StandardController extends Resource[HNil] {
 
 }
