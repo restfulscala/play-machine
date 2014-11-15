@@ -7,10 +7,12 @@
 </head>
 <body>
 
-<h2>Switching @switch.switchId.value ?</h2>
+<h2>Switch @switch.switchId.value is currently @switch.position</h2>
 <div class="switch">
 	<div>
-		
+		<form action="/switches/@switch.switchId.value" method="POST">
+		  <input type="submit" value="Toggle Switch!">
+		</form>
 	</div>	
 </div>
 </body>
