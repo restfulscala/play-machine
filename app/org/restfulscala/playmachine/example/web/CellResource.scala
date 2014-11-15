@@ -5,6 +5,7 @@ import org.restfulscala.playmachine.example.domain.{Cell, CellId, CellRepository
 import org.restfulscala.playmachine.example.web.SirenRepresentations._
 import org.restfulscala.playmachine.resource.{PathParam, Resource}
 import org.restfulscala.playsiren._
+import play.api.libs.concurrent.Execution._
 import play.api.mvc.Request
 
 object CellResource extends Resource[Cell, CellId] {
@@ -20,5 +21,7 @@ object CellResource extends Resource[Cell, CellId] {
     case Accepts.Html()     => Ok(views.html.cell(resource))
     case AcceptsSirenJson() => Ok(Siren.asRootEntity(resource))
     }
+
+  override implicit def executionContext = defaultContext
 
 }

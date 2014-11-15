@@ -1,5 +1,7 @@
 package org.restfulscala.playmachine.example.domain
 
+import scala.concurrent.Future
+
 object CellRepository {
 
   val cells = Map(
@@ -30,6 +32,6 @@ object CellRepository {
 
   )
 
-  def findById(id: CellId): Option[Cell] = cells get id
+  def findById(id: CellId): Future[Option[Cell]] = Future.successful(cells get id)
 
 }

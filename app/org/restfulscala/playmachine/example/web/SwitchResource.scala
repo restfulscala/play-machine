@@ -6,6 +6,7 @@ import org.restfulscala.playmachine.resource.{PathParam, Resource}
 import play.api.mvc.Request
 import org.restfulscala.playsiren._
 import SirenRepresentations._
+import play.api.libs.concurrent.Execution.defaultContext
 
 object SwitchResource extends Resource[Switch, SwitchId] {
 
@@ -22,12 +23,14 @@ object SwitchResource extends Resource[Switch, SwitchId] {
     case AcceptsSirenJson() => Ok(Siren.asRootEntity(resource))
   }
 
-  override def handlePost(request: Request[_], switchId: SwitchId) = isResourceExists(request, switchId) match {
+  override def handlePost(request: Request[_], switchId: SwitchId) = isResourceExists(request, switchId) map {
       case Some(switch) =>
         val updated = switch.flip()
         SwitchRepository.save(updated)
         Right(updated)
       case None => Left(404)
     }
+
+  override implicit def executionContext = defaultContext
 }
 
