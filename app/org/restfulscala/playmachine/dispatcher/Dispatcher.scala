@@ -3,7 +3,7 @@ package org.restfulscala.playmachine.dispatcher
 import org.restfulscala.playmachine.resource.{Resource, PathParam}
 import play.api.mvc._
 
-class Dispatcher(routes: List[Route])
+class Dispatcher(routes: Seq[Route])
   extends (RequestHeader => Option[Handler]) with Results {
 
   final def apply(request: RequestHeader): Option[Handler] = {
@@ -16,4 +16,10 @@ class Dispatcher(routes: List[Route])
   protected def dispatch(request: RequestHeader): Option[(Resource, Seq[PathParam])] =
     routes collectFirst Function.unlift(Route.matches(request))
 
+}
+
+object Dispatcher {
+  def from(routes: Route*): Dispatcher = {
+    new Dispatcher(routes)
+  }
 }
