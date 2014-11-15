@@ -80,4 +80,13 @@ trait Resource extends Controller {
       case false => ???
     }
   }
+
+  def handleContainsAccept(request : Request[_], pathParams: Seq[PathParam]): Result = {
+  	request.headers.get("Accept") match {
+      case None    => handleResourceExists(request, pathParams)
+      case Some(_) => ??? // we will play! with accepts-headers later :)
+    }
+  }
+
+  def handleResourceExists(request : Request[_], pathParams: Seq[PathParam]): Result = ???
 }
