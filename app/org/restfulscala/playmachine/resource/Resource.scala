@@ -142,7 +142,8 @@ trait Resource[R, RequestParams] extends Controller with HttpVerbs {
   	request.method == "POST" match {
       case true  => handlePost(request, requestParams) match {
       	case Left(s) => Results.Status(s)
-      	case Right(resource) => Results.Ok // add location header and deal with creation
+      	case Right(resource) =>
+          Results.Ok // add location header and deal with creation
       }
       case false => Results.NotFound
     }

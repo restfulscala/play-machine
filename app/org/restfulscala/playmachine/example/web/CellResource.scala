@@ -18,8 +18,8 @@ object CellResource extends Resource[Cell, CellId] {
       CellRepository findById cellId
 
   override def handleGet(resource: Cell) = {
-      case AcceptsSirenJson() => Ok(Siren.asRootEntity(resource))
-      case Accepts.Html()     => Ok(views.html.cell(resource))
+    case Accepts.Html()     => Ok(views.html.cell(resource))
+    case AcceptsSirenJson() => Ok(Siren.asRootEntity(resource))
     }
 
 }
