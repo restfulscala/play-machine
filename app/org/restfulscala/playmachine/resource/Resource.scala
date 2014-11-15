@@ -1,6 +1,6 @@
 package org.restfulscala.playmachine.resource
 
-import play.api.http.{MediaRange, HttpVerbs}
+import play.api.http.{HttpVerbs, MediaRange}
 import play.api.mvc._
 
 trait Resource[R, RequestParams] extends Controller with HttpVerbs {
@@ -150,5 +150,8 @@ trait Resource[R, RequestParams] extends Controller with HttpVerbs {
   }
 
   def handleResourceMovedPermanently(request : Request[_], requestParams: RequestParams): Result = ???
+
+  def extractPathParam(name: String, pathParams: Seq[PathParam]) =
+    pathParams.find(_.name == name).map(_.value)
 
 }

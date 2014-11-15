@@ -11,8 +11,9 @@ object SwitchResource extends Resource[Switch, SwitchId] {
 
   override def allowedMethods = Set(HEAD, GET, POST, OPTIONS)
 
-  override def extractRequestParams(request: Request[_], pathParams: Seq[PathParam]) =
-    pathParams.find(_.name == "switchId").map(p => SwitchId(p.value))
+  override def extractRequestParams(request: Request[_], pathParams: Seq[PathParam]) = {
+    extractPathParam("switchId", pathParams) map SwitchId
+  }
 
   override def isResourceExists(request: Request[_], switchId: SwitchId) = SwitchRepository findById switchId
 

@@ -12,7 +12,7 @@ object CellResource extends Resource[Cell, CellId] {
   override def allowedMethods = Set(HEAD, GET, OPTIONS)
 
   override def extractRequestParams(request: Request[_], pathParams: Seq[PathParam]) =
-    pathParams.find(_.name == "cellId").map(p => CellId(p.value))
+    extractPathParam("cellId", pathParams) map CellId
 
   override def isResourceExists(request: Request[_], cellId: CellId) = CellRepository findById cellId
 
