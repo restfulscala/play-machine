@@ -10,5 +10,5 @@ object SwitchResource extends Resource[String] {
   
   override def allowedMethods = Set("HEAD", "GET", "OPTIONS")
   implicit override def writer: play.api.http.Writeable[String] = ???
-  override def getResource(request : Request[_], pathParams: Seq[PathParam]) = "I am a Switch!"
+  override def isResourceExists(request : Request[_], pathParams: Seq[PathParam]) = Some("I am a Switch!")
 }

@@ -25,13 +25,10 @@ trait Resource[R] extends Controller {
   def isRequestEntityTooLarge(request : Request[_]) : Boolean = false
 
   // idea : write async version
-  def isResourceExists(request : Request[_], pathParams: Seq[PathParam]) : Boolean = true
+  def isResourceExists(request : Request[_], pathParams: Seq[PathParam]) : Option[R]
 
   // idea : write async version
   def isResourcePreviouslyExisted(request : Request[_], pathParams: Seq[PathParam]) : Boolean = false
-
-  // idea : write async version
-  def getResource(request : Request[_], pathParams: Seq[PathParam]) : R
 
   def handleRequest(pathParams: Seq[PathParam]): EssentialAction = Action { request =>
   	// Bootstrap decision tree
@@ -104,14 +101,14 @@ trait Resource[R] extends Controller {
   def handleResourceExists(request : Request[_], pathParams: Seq[PathParam]): Result = {
   	//  from now on, we will follow an over simplified version of the header flow...because HACKATHON!
   	isResourceExists(request, pathParams) match {
-      case true  => handleReads(request, pathParams)
-      case false => handleWrites(request, pathParams)
+      case Some(r)  => handleReads(request, pathParams, r)
+      case None     => handleWrites(request, pathParams)
     }
   }
 
-  def handleReads(request : Request[_], pathParams: Seq[PathParam]): Result = {
+  def handleReads(request : Request[_], pathParams: Seq[PathParam], resource : R): Result = {
   	request.method == "GET" match {
-      case true  => Ok(getResource(request, pathParams))
+      case true  => Ok(resource)
       case false => handleHead(request, pathParams)
     }
   }

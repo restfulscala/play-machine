@@ -9,5 +9,5 @@ import org.restfulscala.playmachine.resource._
 object CellResource extends Resource[String] {
 	implicit override def writer: play.api.http.Writeable[String] = ???
 
-	override def getResource(request : Request[_], pathParams: Seq[PathParam]) = "I am a Cell!"
+	override def isResourceExists(request : Request[_], pathParams: Seq[PathParam]) = Some("I am a Cell!")
 }
