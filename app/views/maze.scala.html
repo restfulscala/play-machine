@@ -1,0 +1,26 @@
+@(cell: org.restfulscala.playmachine.example.domain.Cell)
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>@cell.title</title>
+</head>
+<body>
+
+<h1>Welcome to Play Machine</h1>
+<h2>Let's play maze</h2>
+<div class="maze">
+	<div class="cell">
+		<h3>You are currently in @cell.title</h3>
+	</div>
+	<div>
+		<h3>Possible directions</h3>
+		<ul> 
+			@for(c <- cell.neighbours) {
+	  			<li><a href="/cells/@c._2.value" rel="@c._1">Go @c._1</a></li>
+			}
+		</ul>
+	</div>	
+</div>
+</body>
+</html>

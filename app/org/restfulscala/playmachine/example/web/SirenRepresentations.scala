@@ -23,7 +23,7 @@ object SirenRepresentations {
 
     private def links(cell: Cell): List[Link] = {
       val current = link("current", cell.cellId)
-      val neighbours = Cell.neighbours(cell) map { case (direction, cellId) => link(direction.toString, cellId)}
+      val neighbours = cell.neighbours map { case (direction, cellId) => link(direction.toString, cellId)}
       current :: neighbours
     }
 
