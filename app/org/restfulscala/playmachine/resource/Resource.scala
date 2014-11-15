@@ -10,6 +10,8 @@ trait Resource extends Controller {
 
   def isMalformed(request : Request[_], pathParams: Seq[PathParam]) : Boolean = false
 
+  def isAuthorized(request : Request[_], pathParams: Seq[PathParam]) : Boolean = false
+
   def handleRequest(pathParams: Seq[PathParam]): EssentialAction = Action { request =>
   	???
 
@@ -29,6 +31,13 @@ trait Resource extends Controller {
     }
   }
 
-  def handleUnauthorized(request : Request[_], pathParams: Seq[PathParam]): EssentialAction = ???
+  def handleUnauthorized(request : Request[_], pathParams: Seq[PathParam]): EssentialAction = {
+  	(!isAuthorized(request, pathParams)) match {
+      case true => handleForbidden(request, pathParams)
+      case false => Action {request => Results.Unauthorized}
+    }
+  }
+
+  def handleForbidden(request : Request[_], pathParams: Seq[PathParam]): EssentialAction = ???
 
 }
