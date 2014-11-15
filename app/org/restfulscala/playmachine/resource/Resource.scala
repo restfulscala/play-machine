@@ -1,14 +1,11 @@
 package org.restfulscala.playmachine.resource
 
-import play.api.http.HttpVerbs
-import play.api.mvc.{Action, EssentialAction, Controller, Results, Request, Result, Headers}
-import play.api.http.Writeable
+import play.api.http.{MediaRange, HttpVerbs}
+import play.api.mvc._
 
 trait Resource[R] extends Controller with HttpVerbs {
 
   def allowedMethods : Set[String] = Set(GET, HEAD)
-
-  implicit def writer : Writeable[R]
 
   def isMalformed(request : Request[_], pathParams: Seq[PathParam]): Boolean = false
 
@@ -86,14 +83,7 @@ trait Resource[R] extends Controller with HttpVerbs {
   def handleIsOptions(request : Request[_], pathParams: Seq[PathParam]): Result = {
   	request.method == OPTIONS match {
       case true  => Results.Ok.withHeaders("Allow" -> allowedMethods.mkString(", "))
-      case false => handleContainsAccept(request, pathParams)
-    }
-  }
-
-  def handleContainsAccept(request : Request[_], pathParams: Seq[PathParam]): Result = {
-  	request.headers.get("Accept") match {
-      case None    => handleResourceExists(request, pathParams)
-      case Some(_) => ??? // we will play! with accepts-headers later :)
+      case false => handleResourceExists(request, pathParams)
     }
   }
 
@@ -106,17 +96,19 @@ trait Resource[R] extends Controller with HttpVerbs {
   }
 
   def handleReads(request : Request[_], pathParams: Seq[PathParam], resource : R): Result = {
-  	request.method == "GET" match {
-      case true  => Ok(resource)
-      case false => handleHead(request, pathParams)
+    request.method match {
+      case GET  => render(handleGet(resource))(request)
+      case HEAD => handleHead(request, pathParams)
+      case _ => BadRequest
     }
   }
 
+  def handleGet(resource: R): PartialFunction[MediaRange, Result] = {
+    case _ => InternalServerError
+  }
+
   def handleHead(request : Request[_], pathParams: Seq[PathParam]): Result = {
-  	request.method == "HEAD" match {
-      case true  => ???
-      case false => Results.NotAcceptable // No idea what to do here
-    }
+    NoContent
   }
 
   def handleWrites(request : Request[_], pathParams: Seq[PathParam]): Result = {
