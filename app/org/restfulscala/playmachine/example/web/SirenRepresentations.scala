@@ -1,10 +1,10 @@
 package org.restfulscala.playmachine.example.web
 
 import com.yetu.siren.SirenRootEntityWriter
-import com.yetu.siren.model.Entity.{EmbeddedRepresentation, RootEntity}
+import com.yetu.siren.model.Entity.{EmbeddedLink, EmbeddedRepresentation, RootEntity}
 import com.yetu.siren.model.Property.StringValue
 import com.yetu.siren.model.{Action, Link, Property}
-import org.restfulscala.playmachine.example.domain.{Cell, CellId, Switch}
+import org.restfulscala.playmachine.example.domain.{SwitchId, Cell, CellId, Switch}
 
 object SirenRepresentations {
 
@@ -29,21 +29,28 @@ object SirenRepresentations {
     private def link(rel: String, cellId: CellId): Link =
       Link(rel = List(rel), s"/cells/${cellId.value}")
 
-    private def embeddedSwitchEntity(switch: Switch): EmbeddedRepresentation = {
-      EmbeddedRepresentation(
+    private def embeddedSwitchEntity(switch: SwitchId): EmbeddedLink = {
+      EmbeddedLink(
         classes = Some(List("switch")),
         rel = List("item"),
-        properties = Some(List(Property("position", StringValue(switch.position.toString)))),
-        actions = Some(List(
-          Action(
-            name = "flip",
-            href = s"/switches/${switch.switchId.value}",
-            method = Some(Action.Method.POST)
-          )
-        ))
+        href = s"/switches/${switch.value}"
       )
     }
-
   }
+
+  implicit val switchWriter = new SirenRootEntityWriter[Switch] {
+    override def toSiren(switch: Switch) = RootEntity(
+      classes = Some(List("switch")),
+      properties = Some(List(Property("position", StringValue(switch.position.toString)))),
+      actions = Some(List(
+        Action(
+          name = "flip",
+          href = s"/switches/${switch.switchId.value}",
+          method = Some(Action.Method.POST)
+        )
+      ))
+    )
+  }
+
 
 }

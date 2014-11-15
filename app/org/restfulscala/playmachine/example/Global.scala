@@ -13,7 +13,7 @@ object Global extends GlobalSettings {
   val myDispatcher = Dispatcher.from(
 
     "cells" / Param("cellId")     :~> CellResource,
-    "switch" / Param("switchId")  :~> SwitchResource
+    "switches" / Param("switchId")  :~> SwitchResource
 
   )
 

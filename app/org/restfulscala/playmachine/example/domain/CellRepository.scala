@@ -24,8 +24,7 @@ object CellRepository {
       CellId("I"),
       "Cell I",
       south = Some(CellId("N")),
-      switches = List(
-        Switch(SwitchId("1"), Position.Down)
+      switches = List(SwitchId("1")
       )
     )
 

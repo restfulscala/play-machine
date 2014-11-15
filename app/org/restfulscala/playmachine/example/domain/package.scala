@@ -1,5 +1,7 @@
 package org.restfulscala.playmachine.example
 
+import org.restfulscala.playmachine.example.domain.Position.{down, up}
+
 package object domain {
 
   case class CellId(value: String) extends AnyVal
@@ -11,7 +13,7 @@ package object domain {
     south: Option[CellId] = None,
     east: Option[CellId] = None,
     west: Option[CellId] = None,
-    switches: List[Switch] = Nil
+    switches: List[SwitchId] = Nil
   )
 
   object Cell {
@@ -35,12 +37,17 @@ package object domain {
   case class Switch(
     switchId: SwitchId,
     position: Position
-  )
+  ) {
+    def flip(): Switch = {
+      if (position == up) copy(position = down)
+      else copy(position = up)
+    }
+  }
 
   sealed trait Position
   object Position {
-    case object Up extends Position
-    case object Down extends Position
+    case object up extends Position
+    case object down extends Position
   }
 
 }

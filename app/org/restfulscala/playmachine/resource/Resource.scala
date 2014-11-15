@@ -26,7 +26,7 @@ trait Resource[R] extends Controller with HttpVerbs {
   // idea : write async version
   def isResourcePreviouslyExisted(request : Request[_], pathParams: Seq[PathParam]) : Boolean = false
 
-  def handlePost(request : Request[_], pathParams: Seq[PathParam]) : Either[String, R] = Left("Not implemented by resource")
+  def handlePost(request : Request[_], pathParams: Seq[PathParam]) : Either[Int, R] = Left(500)
 
   def handlePut(request : Request[_], pathParams: Seq[PathParam]) : Either[String, R] = Left("Not implemented by resource")
 
@@ -79,15 +79,21 @@ trait Resource[R] extends Controller with HttpVerbs {
 
   def handleRequestEntityTooLarge(request : Request[_], pathParams: Seq[PathParam]): Result = {
   	!isRequestEntityTooLarge(request) match {
-      case true  => handleIsOptions(request, pathParams)
+      case true  => handleMethod(request, pathParams)
       case false => Results.EntityTooLarge
     }
   }
 
-  def handleIsOptions(request : Request[_], pathParams: Seq[PathParam]): Result = {
-  	request.method == OPTIONS match {
-      case true  => Results.Ok.withHeaders("Allow" -> allowedMethods.mkString(", "))
-      case false => handleResourceExists(request, pathParams)
+  def handleMethod(request : Request[_], pathParams: Seq[PathParam]): Result = {
+  	request.method match {
+      case OPTIONS => Results.Ok.withHeaders("Allow" -> allowedMethods.mkString(", "))
+      case HEAD => handleHead(request, pathParams)
+      case GET => isResourceExists(request, pathParams) match {
+        case Some(resource) => render(handleGet(resource))(request)
+        case None => NotFound
+      }
+      case POST => handlePOST(request, pathParams)
+      case PUT => handleWrites(request, pathParams)
     }
   }
 
@@ -135,7 +141,7 @@ trait Resource[R] extends Controller with HttpVerbs {
   def handlePOST(request : Request[_], pathParams: Seq[PathParam]): Result = {
   	request.method == "POST" match {
       case true  => handlePost(request, pathParams) match {
-      	case Left(s) => Results.InternalServerError(s)
+      	case Left(s) => Results.Status(s)
       	case Right(resource) => Results.Ok // add location header and deal with creation
       }
       case false => Results.NotFound
