@@ -26,6 +26,10 @@ trait Resource[R] extends Controller with HttpVerbs {
   // idea : write async version
   def isResourcePreviouslyExisted(request : Request[_], pathParams: Seq[PathParam]) : Boolean = false
 
+  def handlePost(request : Request[_], pathParams: Seq[PathParam]) : Either[String, R] = Left("Not implemented by resource")
+
+  def handlePut(request : Request[_], pathParams: Seq[PathParam]) : Either[String, R] = Left("Not implemented by resource")
+
   def handleRequest(pathParams: Seq[PathParam]): EssentialAction = Action { request =>
   	// Bootstrap decision tree
   	handleAllowedMethods(request, pathParams)
@@ -113,7 +117,10 @@ trait Resource[R] extends Controller with HttpVerbs {
 
   def handleWrites(request : Request[_], pathParams: Seq[PathParam]): Result = {
   	request.method == "PUT" match {
-      case true  => ???
+      case true  => handlePut(request, pathParams) match {
+      	case Left(s) => Results.InternalServerError(s)
+      	case Right(resource) => Results.Ok // add location header and deal with creation
+      }
       case false => handleResourcePreviouslyExisted(request, pathParams)
     }
   }
@@ -127,7 +134,10 @@ trait Resource[R] extends Controller with HttpVerbs {
 
   def handlePOST(request : Request[_], pathParams: Seq[PathParam]): Result = {
   	request.method == "POST" match {
-      case true  => ???
+      case true  => handlePost(request, pathParams) match {
+      	case Left(s) => Results.InternalServerError(s)
+      	case Right(resource) => Results.Ok // add location header and deal with creation
+      }
       case false => Results.NotFound
     }
   }
