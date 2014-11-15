@@ -20,6 +20,12 @@
 	  			<li><a href="/cells/@c._2.value" rel="@c._1">Go @c._1</a></li>
 			}
 		</ul>
+		<h3>Possible switch</h3>
+		<ul> 
+			@for(s <- cell.switches) {
+	  			<li><a href="/switches/@s.value" rel="switch">Activate switch @s.value</a></li>
+			}
+		</ul>
 	</div>	
 </div>
 </body>
