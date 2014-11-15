@@ -14,8 +14,7 @@ object CellResource extends Resource[Cell, CellId] {
   override def extractRequestParams(request: Request[_], pathParams: Seq[PathParam]) =
     pathParams.find(_.name == "cellId").map(p => CellId(p.value))
 
-  override def isResourceExists(request: Request[_], cellId: CellId) =
-      CellRepository findById cellId
+  override def isResourceExists(request: Request[_], cellId: CellId) = CellRepository findById cellId
 
   override def handleGet(resource: Cell) = {
     case Accepts.Html()     => Ok(views.html.cell(resource))

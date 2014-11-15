@@ -14,24 +14,19 @@ object SwitchResource extends Resource[Switch, SwitchId] {
   override def extractRequestParams(request: Request[_], pathParams: Seq[PathParam]) =
     pathParams.find(_.name == "switchId").map(p => SwitchId(p.value))
 
-  override def isResourceExists(request: Request[_], switchId: SwitchId) = {
-      SwitchRepository findById switchId
-  }
+  override def isResourceExists(request: Request[_], switchId: SwitchId) = SwitchRepository findById switchId
 
   override def handleGet(resource: Switch) = {
     case Accepts.Html()     => Ok(views.html.switch(resource))
     case AcceptsSirenJson() => Ok(Siren.asRootEntity(resource))
   }
 
-  override def handlePost(request: Request[_], switchId: SwitchId) = {
-    isResourceExists(request, switchId) match {
+  override def handlePost(request: Request[_], switchId: SwitchId) = isResourceExists(request, switchId) match {
       case Some(switch) =>
         val updated = switch.flip()
         SwitchRepository.save(updated)
         Right(updated)
       case None => Left(404)
     }
-  }
-
 }
 
