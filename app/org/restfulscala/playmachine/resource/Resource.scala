@@ -8,13 +8,17 @@ trait Resource extends Controller {
   // TODO use proper HttpMethod case class
   def allowedMethods : Set[String] = Set("GET", "HEAD")
 
-  def isMalformed(request : Request[_], pathParams: Seq[PathParam]) : Boolean = false
+  def isMalformed(request : Request[_], pathParams: Seq[PathParam]): Boolean = false
 
-  def isAuthorized(request : Request[_], pathParams: Seq[PathParam]) : Boolean = true
+  def isAuthorized(request : Request[_], pathParams: Seq[PathParam]): Boolean = true
 
-  def isForbidden(request : Request[_], pathParams: Seq[PathParam]) : Boolean = false
+  def isForbidden(request : Request[_], pathParams: Seq[PathParam]): Boolean = false
 
-  def isImplemented(headers : Headers) : Boolean = true
+  def isImplemented(headers : Headers): Boolean = true
+
+  def isContentTypeSupport(contentType : Option[String]): Boolean = true
+
+  def isRequestEntityTooLarge(request : Request[_]) : Boolean = false
 
   def handleRequest(pathParams: Seq[PathParam]): EssentialAction = Action { request =>
   	// Bootstrap decision tree
@@ -56,6 +60,24 @@ trait Resource extends Controller {
     }
   }
 
-  def handleUnsupportedMediaType(request : Request[_], pathParams: Seq[PathParam]): Result = ???
+  def handleUnsupportedMediaType(request : Request[_], pathParams: Seq[PathParam]): Result = {
+  	isContentTypeSupport(request.contentType) match {
+      case true  => handleRequestEntityTooLarge(request, pathParams)
+      case false => Results.UnsupportedMediaType
+    }
+  }
 
+  def handleRequestEntityTooLarge(request : Request[_], pathParams: Seq[PathParam]): Result = {
+  	!isRequestEntityTooLarge(request) match {
+      case true  => handleIsOptions(request, pathParams)
+      case false => Results.EntityTooLarge
+    }
+  }
+
+  def handleIsOptions(request : Request[_], pathParams: Seq[PathParam]): Result = {
+  	request.method == "OPTIONS" match {
+      case true  => Results.Ok
+      case false => ???
+    }
+  }
 }
