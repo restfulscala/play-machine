@@ -1,6 +1,6 @@
 package org.restfulscala.playmachine.resource
 
-import play.api.mvc.{Action, EssentialAction, Controller, Results, Request}
+import play.api.mvc.{Action, EssentialAction, Controller, Results, Request, Result}
 import org.restfulscala.playmachine.resource._
 
 trait Resource extends Controller {
@@ -10,34 +10,43 @@ trait Resource extends Controller {
 
   def isMalformed(request : Request[_], pathParams: Seq[PathParam]) : Boolean = false
 
-  def isAuthorized(request : Request[_], pathParams: Seq[PathParam]) : Boolean = false
+  def isAuthorized(request : Request[_], pathParams: Seq[PathParam]) : Boolean = true
+
+  def isForbidden(request : Request[_], pathParams: Seq[PathParam]) : Boolean = false
 
   def handleRequest(pathParams: Seq[PathParam]): EssentialAction = Action { request =>
-  	???
-
+  	// Bootstrap decision tree
+  	handleAllowedMethods(request, pathParams)
   }
 
-  def handleAllowedMethods(request : Request[_], pathParams: Seq[PathParam]): EssentialAction = {
+  def handleAllowedMethods(request : Request[_], pathParams: Seq[PathParam]): Result = {
   	allowedMethods.contains(request.method) match {
       case true => handleBadRequest(request, pathParams)
-      case false => Action {request => Results.MethodNotAllowed}
+      case false => Results.MethodNotAllowed
     }
   }
 
-  def handleBadRequest(request : Request[_], pathParams: Seq[PathParam]): EssentialAction = {
+  def handleBadRequest(request : Request[_], pathParams: Seq[PathParam]): Result = {
   	(!isMalformed(request, pathParams)) match {
       case true => handleUnauthorized(request, pathParams)
-      case false => Action {request => Results.BadRequest}
+      case false => Results.BadRequest
     }
   }
 
-  def handleUnauthorized(request : Request[_], pathParams: Seq[PathParam]): EssentialAction = {
+  def handleUnauthorized(request : Request[_], pathParams: Seq[PathParam]): Result = {
   	(!isAuthorized(request, pathParams)) match {
       case true => handleForbidden(request, pathParams)
-      case false => Action {request => Results.Unauthorized}
+      case false => Results.Unauthorized
     }
   }
 
-  def handleForbidden(request : Request[_], pathParams: Seq[PathParam]): EssentialAction = ???
+  def handleForbidden(request : Request[_], pathParams: Seq[PathParam]): Result = {
+  	(!isForbidden(request, pathParams)) match {
+      case true => handleNotImplemented(request, pathParams)
+      case false => Results.Forbidden
+    }
+  }
+
+  def handleNotImplemented(request : Request[_], pathParams: Seq[PathParam]): Result = ???
 
 }
