@@ -2,15 +2,9 @@ package org.restfulscala.playmachine.resource
 
 import play.api.http.HttpVerbs
 import play.api.mvc.{Action, EssentialAction, Controller, Results, Request, Result, Headers}
-<<<<<<< HEAD
 import play.api.http.Writeable
-import org.restfulscala.playmachine.resource._
 
-trait Resource[R] extends Controller {
-=======
-
-trait Resource extends Controller with HttpVerbs {
->>>>>>> Use HttpVerbs constants
+trait Resource[R] extends Controller with HttpVerbs {
 
   def allowedMethods : Set[String] = Set(GET, HEAD)
 

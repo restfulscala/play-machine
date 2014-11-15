@@ -4,6 +4,8 @@ import org.restfulscala.playmachine.dispatcher.PathMatch.PathElement
 import org.restfulscala.playmachine.resource.{PathParam, Resource}
 import play.api.mvc.RequestHeader
 
+import scala.language.existentials
+
 case class Route(pathMatch: PathMatch, resource: Resource[_])
 object Route {
 
