@@ -1,12 +1,15 @@
 package org.restfulscala.playmachine.resource
 
 import play.api.mvc.{Action, EssentialAction, Controller, Results, Request, Result, Headers}
+import play.api.http.Writeable
 import org.restfulscala.playmachine.resource._
 
-trait Resource extends Controller {
+trait Resource[R] extends Controller {
 
   // TODO use proper HttpMethod case class
   def allowedMethods : Set[String] = Set("GET", "HEAD")
+
+  implicit def writer : Writeable[R]
 
   def isMalformed(request : Request[_], pathParams: Seq[PathParam]): Boolean = false
 
@@ -23,6 +26,12 @@ trait Resource extends Controller {
 
   // idea : write async version
   def isResourceExists(request : Request[_], pathParams: Seq[PathParam]) : Boolean = true
+
+  // idea : write async version
+  def isResourcePreviouslyExisted(request : Request[_], pathParams: Seq[PathParam]) : Boolean = false
+
+  // idea : write async version
+  def getResource(request : Request[_], pathParams: Seq[PathParam]) : R
 
   def handleRequest(pathParams: Seq[PathParam]): EssentialAction = Action { request =>
   	// Bootstrap decision tree
@@ -100,8 +109,41 @@ trait Resource extends Controller {
     }
   }
 
-  def handleReads(request : Request[_], pathParams: Seq[PathParam]): Result = ???
+  def handleReads(request : Request[_], pathParams: Seq[PathParam]): Result = {
+  	request.method == "GET" match {
+      case true  => Ok(getResource(request, pathParams))
+      case false => handleHead(request, pathParams)
+    }
+  }
 
-  def handleWrites(request : Request[_], pathParams: Seq[PathParam]): Result = ???
+  def handleHead(request : Request[_], pathParams: Seq[PathParam]): Result = {
+  	request.method == "HEAD" match {
+      case true  => ???
+      case false => Results.NotAcceptable // No idea what to do here
+    }
+  }
+
+  def handleWrites(request : Request[_], pathParams: Seq[PathParam]): Result = {
+  	request.method == "PUT" match {
+      case true  => ???
+      case false => handleResourcePreviouslyExisted(request, pathParams)
+    }
+  }
+
+  def handleResourcePreviouslyExisted(request : Request[_], pathParams: Seq[PathParam]): Result = {
+  	isResourcePreviouslyExisted(request, pathParams) match {
+      case true  => handleResourceMovedPermanently(request, pathParams)
+      case false => handlePOST(request, pathParams)
+    }
+  }
+
+  def handlePOST(request : Request[_], pathParams: Seq[PathParam]): Result = {
+  	request.method == "POST" match {
+      case true  => ???
+      case false => Results.NotFound
+    }
+  }
+
+  def handleResourceMovedPermanently(request : Request[_], pathParams: Seq[PathParam]): Result = ???
 
 }

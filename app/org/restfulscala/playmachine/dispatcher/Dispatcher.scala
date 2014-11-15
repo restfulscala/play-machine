@@ -13,7 +13,7 @@ class Dispatcher(routes: Seq[Route])
     }
   }
 
-  protected def dispatch(request: RequestHeader): Option[(Resource, Seq[PathParam])] =
+  protected def dispatch(request: RequestHeader): Option[(Resource[_], Seq[PathParam])] =
     routes collectFirst Function.unlift(Route.matches(request))
 
 }
