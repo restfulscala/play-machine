@@ -11,7 +11,7 @@
 <h2>Let's play maze</h2>
 <div class="maze">
 	<div class="cell">
-		<h3>You are currently in @cell.title</h3>
+		<h3>You are currently on @cell.title</h3>
 	</div>
 	<div>
 		<h3>Possible directions</h3>
@@ -23,7 +23,7 @@
 		<h3>Possible switch</h3>
 		<ul> 
 			@for(s <- cell.switches) {
-	  			<li><a href="/switches/@s.value" rel="switch">Activate switch @s.value</a></li>
+	  			<li><a href="/switches/@s.value" rel="switch">See switch @s.value</a></li>
 			}
 		</ul>
 	</div>	
