@@ -18,7 +18,6 @@ val root = project in file(".") enablePlugins PlayScala
 
 scalaVersion := "2.11.4"
 
-StandardLayout.settings
 licenses := Seq("MIT" -> url("http://opensource.org/licenses/MIT"))
 
 seq(bintrayResolverSettings:_*)
