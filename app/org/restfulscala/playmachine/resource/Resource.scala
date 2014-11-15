@@ -1,9 +1,10 @@
 package org.restfulscala.playmachine.resource
 
 import play.api.mvc.{EssentialAction, Controller}
+import shapeless.HList
 
-trait Resource extends Controller {
+trait Resource[PathParams <: HList] extends Controller {
 
-  def handleRequest(): EssentialAction
+  def handleRequest(pathParams: PathParams): EssentialAction
 
 }
