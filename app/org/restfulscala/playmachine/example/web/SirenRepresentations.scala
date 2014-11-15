@@ -4,6 +4,7 @@ import com.yetu.siren.SirenRootEntityWriter
 import com.yetu.siren.model.Entity.{EmbeddedLink, EmbeddedRepresentation, RootEntity}
 import com.yetu.siren.model.Property.StringValue
 import com.yetu.siren.model.{Action, Link, Property}
+import org.restfulscala.playmachine.example.Global
 import org.restfulscala.playmachine.example.domain.{SwitchId, Cell, CellId, Switch}
 
 object SirenRepresentations {

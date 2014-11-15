@@ -6,7 +6,8 @@ import play.api.mvc.RequestHeader
 
 import scala.language.existentials
 
-case class Route(pathMatch: PathMatch, resource: Resource[_])
+case class Route(pathMatch: PathMatch, resource: Resource[_]) {
+}
 object Route {
 
   implicit class PathMatchRouteBuilder(val pathMatch: PathMatch) extends AnyVal {

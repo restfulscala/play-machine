@@ -10,12 +10,10 @@ import play.api.mvc.RequestHeader
 
 object Global extends GlobalSettings {
 
-  val myDispatcher = Dispatcher.from(
+  val cells    =  "cells" / Param("cellId")       :~> CellResource
+  val switches =  "switches" / Param("switchId")  :~> SwitchResource
 
-    "cells" / Param("cellId")     :~> CellResource,
-    "switches" / Param("switchId")  :~> SwitchResource
-
-  )
+  val myDispatcher = Dispatcher.from(cells, switches)
 
   override def onRouteRequest(request: RequestHeader) = {
     myDispatcher(request)
